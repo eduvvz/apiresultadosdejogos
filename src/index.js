@@ -6,7 +6,10 @@ const puppeteer = require('puppeteer'); // Adding Puppeteer
 app.get('/', function(req, res) {
 
     // Launching the Puppeteer controlled headless browser and navigate to the Digimon website
-    puppeteer.launch().then(async function(browser) {
+    puppeteer.launch({ 
+      headless: true,
+      args: ['--no-sandbox', '--disable-setuid-sandbox'], 
+    }).then(async function(browser) {
       const page = await browser.newPage();
       await page.goto('https://globoesporte.globo.com/agenda/#/todos');
       await page.waitForSelector('.ScoreBoardTeamstyle__TeamInformation-sc-1xsoq6b-1');
