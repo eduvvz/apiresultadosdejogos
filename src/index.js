@@ -4,12 +4,13 @@ const puppeteer = require('puppeteer'); // Adding Puppeteer
 
 // Wrapping the Puppeteer browser logic in a GET request
 app.get('/', function(req, res) {
-
+  console.log('get');
     // Launching the Puppeteer controlled headless browser and navigate to the Digimon website
     puppeteer.launch({ 
       headless: true,
       args: ['--no-sandbox', '--disable-setuid-sandbox'], 
     }).then(async function(browser) {
+      console.log('launch');
       const page = await browser.newPage();
       await page.goto('https://globoesporte.globo.com/agenda/#/todos');
       await page.waitForSelector('.ScoreBoardTeamstyle__TeamInformation-sc-1xsoq6b-1');
@@ -61,7 +62,8 @@ app.get('/', function(req, res) {
     });
 });
 
-// Making Express listen on port 7000
-app.listen(3000, function() {
-  console.log('Running on port 3000.');
+// Making Express listen on port 49160
+app.listen(process.env.PORT || 5000, function() {
+  console.log(process.env.PORT || 5000);
+  console.log('Running on port 8080.');
 });
