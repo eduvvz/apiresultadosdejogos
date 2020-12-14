@@ -1,17 +1,21 @@
-const express = require('express'); // Adding Express
-const app = express(); // Initializing Express
-const puppeteer = require('puppeteer'); // Adding Puppeteer
+const express = require('express');
+const app = express();
+const puppeteer = require('puppeteer');
 
-// Wrapping the Puppeteer browser logic in a GET request
-app.get('/', function(req, res) {
-  console.log('get');
-    // Launching the Puppeteer controlled headless browser and navigate to the Digimon website
-    puppeteer.launch({ 
-      headless: true,
-      args: ['--no-sandbox', '--disable-setuid-sandbox'], 
-    }).then(async function(browser) {
-      console.log('launch');
-      const page = await browser.newPage();
+class Routes {
+
+  constructor() {
+    return (async () => {
+      this.browser = await puppeteer.launch({ 
+        headless: true,
+        args: ['--no-sandbox', '--disable-setuid-sandbox'], 
+      });
+      return this;
+    })();
+  }
+
+  Root = async (req, res, next) => {
+    const page = await this.browser.newPage();
       await page.goto('https://globoesporte.globo.com/agenda/#/todos');
       await page.waitForSelector('.ScoreBoardTeamstyle__TeamInformation-sc-1xsoq6b-1');
       const result = await page.evaluate(() => {
@@ -57,13 +61,13 @@ app.get('/', function(req, res) {
           championships,
         };
       });
-
+      page.close();
       res.send(result);
-    });
-});
+  }
+}
 
-// Making Express listen on port 49160
-app.listen(process.env.PORT || 5000, function() {
-  console.log(process.env.PORT || 5000);
-  console.log('Running on port 8080.');
-});
+(async () => {
+  const routes = await new Routes();
+  app.get('/', routes.Root);
+  app.listen(5000);
+})();
