@@ -69,5 +69,5 @@ class Routes {
 (async () => {
   const routes = await new Routes();
   app.get('/', routes.Root);
-  app.listen(5000);
+  app.listen(process.env.YOUR_PORT || process.env.PORT || 80);
 })();
